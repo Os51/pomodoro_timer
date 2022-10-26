@@ -1,7 +1,7 @@
 import time
 import threading
 import tkinter as tk
-from tkinter import ttk, PhotoImage
+from tkinter import ttk, PhotoImage, messagebox
 
 class PomoTimer:
 
@@ -10,7 +10,7 @@ class PomoTimer:
         self.root.geometry("400x300")
         self.root.title("Pomodoro Timer")
         self.root.tk.call('wm', 'iconphoto', self.root._w, PhotoImage(file='./pomo_image_assets/pomodoro_tomato_ico_2.png'))
-
+        self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
         self.s = ttk.Style()
         self.s.configure("TNotebook.Tab", font=("Calibri", 16))
         self.s.configure("TButton", font=("Calibri", 16))
@@ -63,6 +63,7 @@ class PomoTimer:
 
     def start_timer_thread(self):
         if not self.running:
+            self.tabs.select(0)
             t = threading.Thread(target=self.start_timer)
             t.start()
             self.running = True
@@ -135,5 +136,8 @@ class PomoTimer:
         self.stopped = True
         self.skipped = True
 
-
+    def on_closing(self):
+        if messagebox.askokcancel("Quit", "Do you want to quit?"):
+            self.root.destroy()
+      
 PomoTimer()
